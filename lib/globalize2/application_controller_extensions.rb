@@ -12,14 +12,14 @@ module Globalize2
         @locale = params[:locale] || session[:locale] || Globalize2Extension.default_language
 
         session[:locale] = @locale
-        I18n.locale = @locale
+        I18n.locale = @locale.to_sym
       end
       
       def reset_locale
         unless I18n.locale == Globalize2Extension.default_language
           locale = Globalize2Extension.default_language
           session[:locale] = locale
-          I18n.locale = locale
+          I18n.locale = locale.to_sym
           flash.now[:notice] = "The locale has been changed to default."
         end
       end

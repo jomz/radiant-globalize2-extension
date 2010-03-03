@@ -45,6 +45,7 @@ class Globalize2Extension < Radiant::Extension
     I18n.default_locale = Globalize2Extension.default_language
     
     ApplicationController.send(:include, Globalize2::ApplicationControllerExtensions)
+    Admin::ResourceController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::PagesController.send(:include, Globalize2::PagesControllerExtensions)
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
     
