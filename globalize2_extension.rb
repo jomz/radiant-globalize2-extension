@@ -46,6 +46,7 @@ class Globalize2Extension < Radiant::Extension
     
     ApplicationController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::ResourceController.send(:include, Globalize2::ApplicationControllerExtensions)
+    Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::PagesController.send(:include, Globalize2::PagesControllerExtensions)
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
     
