@@ -18,7 +18,7 @@ module Globalize2
     tag 'children:each_with_globalize' do |tag|
       with_translated_locales = tag.attr['locale'] == 'false' ? false : true
       if with_translated_locales
-        result = Page.scope_locale(I18n.locale) do
+        result = Page.scope_locale(I18n.locale.to_s) do
           send('tag:children:each_without_globalize', tag)
         end
       else
@@ -162,7 +162,7 @@ module Globalize2
       # The previously current locale is reset after the block is finished.
       def switch_locale(locale)
         current_locale = I18n.locale
-        I18n.locale = locale
+        I18n.locale = locale.to_sym
         result = yield
         I18n.locale = current_locale
         result
