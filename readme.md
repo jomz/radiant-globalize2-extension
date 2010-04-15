@@ -109,9 +109,9 @@ You need to migrate Reorder extension before Globalize2
 
 ### [Paginate][pe]
 
-You need to load Paginate before Globalize2
+You need to load Paginate after Globalize2
 
-    config.extensions = [ :paginate, :globalize2, :all ]
+    config.extensions = [ :globalize2, :paginate, :all ]
     
 ### [Paperclipped][pc]
 
@@ -130,9 +130,6 @@ TODO
 
 Contributors
 ---
-
-* Cristi Duma ([@cristi_duma][cd])
-* Istvan Hoka ([@ihoka][ih])
 
 [rg2]: http://github.com/joshmh/globalize2
 [aissac]: http://aissac.ro
