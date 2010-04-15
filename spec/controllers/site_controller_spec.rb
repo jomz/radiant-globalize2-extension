@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe SiteController do
   
   before(:each) do
-    I18n.locale = "en"
+    I18n.locale = :"en"
     home_page = Factory.create(:page, :title => "Home Page", :slug => "/", :status_id => 100)
     Factory.create(:page_part, :page => home_page, :content => "Home Page")
     

@@ -6,6 +6,7 @@ module Globalize2
       base.reflections[:children].options[:order] = 'pages.virtual DESC'
       
       base.class_eval do
+       
         attr_accessor :reset_translations
         alias_method_chain 'tag:link', :globalize
         alias_method_chain 'tag:children:each', :globalize
@@ -49,10 +50,10 @@ module Globalize2
     end
 
     def update_globalize_record_with_reset
-      if reset_translations && I18n.locale != Globalize2Extension.default_language
-        self.globalize_translations.find_by_locale(I18n.locale).destroy
+      if reset_translations && locale.to_s != Globalize2Extension.default_language
+        self.globalize_translations.find_by_locale(I18n.locale.to_s).destroy
         parts.each do |part|
-          part.globalize_translations.find_by_locale(I18n.locale).destroy
+          part.globalize_translations.find_by_locale(I18n.locale.to_s).destroy
         end
       else
         update_globalize_record_without_reset
@@ -61,7 +62,7 @@ module Globalize2
     
     def url_with_globalize
       unless parent
-        '/' + I18n.locale + url_without_globalize
+        '/' + I18n.locale.to_s + url_without_globalize
       else
         url_without_globalize
       end
