@@ -10,6 +10,8 @@ Requires Radiant >= 0.8. Tested on Radiant 0.9 RC1.
 
 Check out a screencast [presenting the extension][rcp] and one on [compatibility issues][rcc]
 
+Check out a screencast [presenting the extension][rcp] and one on [compatibility issues][rcc].
+
 Features
 ---
 
@@ -155,5 +157,6 @@ Contributors
 
 [cd]: http://twitter.com/cristi_duma
 [ih]: http://twitter.com/ihoka
+
 [rcp]: http://blog.aissac.ro/2009/10/25/episode-2-radiant-globalize2-extension/
 [rcc]: http://blog.aissac.ro/2009/11/02/episode-3-radiant-globalize2-compatibility-issues/
