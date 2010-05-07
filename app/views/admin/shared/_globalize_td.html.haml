@@ -1,4 +1,5 @@
 %td.globalize
-  - Globalize2Extension.locales.map do |locale|
-    - if page.translated_locales.include?(locale.to_sym)
-      %img{:src => "/images/admin/#{locale}.gif", :alt => locale }
+  - if Page === page
+    - Globalize2Extension.locales.map do |locale|
+      - if page.translated_locales.include?(locale.to_sym)
+        %img{:src => "/images/admin/#{locale}.gif", :alt => locale }
