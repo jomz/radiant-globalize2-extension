@@ -22,6 +22,7 @@ module Globalize2
           send('tag:children:each_without_globalize', tag)
         end
       else
+        
         result = send('tag:children:each_without_globalize', tag)
       end
       result
