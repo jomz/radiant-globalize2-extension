@@ -1,16 +1,20 @@
 module Globalize2
   module PageExtensions
+    module InstanceMethods
     def self.included(base)
       base.validate.delete_if { |v| v.options[:scope] == :parent_id }
       base.send(:validate, :unique_slug)
       base.reflections[:children].options[:order] = 'pages.virtual DESC'
-      
+
+
       base.class_eval do
 
         def self.locale
           I18n.locale
         end
-        
+        #eigenclass = class << self; self; end
+
+        translates :title, :slug, :breadcrumb, :description, :keywords
         attr_accessor :reset_translations
         alias_method_chain 'tag:link', :globalize
         alias_method_chain 'tag:children:each', :globalize
@@ -25,7 +29,8 @@ module Globalize2
       end
     end
     
-    def unique_slug      
+        
+    def unique_slug
       options = {
         "pages.parent_id = ?" => self.parent_id,
         "ptrls.slug = ?" => self.slug,
@@ -78,5 +83,6 @@ module Globalize2
       end
       new_page
     end
+      end
   end
 end
