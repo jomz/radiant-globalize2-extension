@@ -109,7 +109,7 @@ describe "Globalize 2 Tags" do
     end
     
     it "filters the children by locale if 'locale' attribute is not set to false" do
-      switch_locale("ro") do
+      switch_locale(:ro) do
         @parent.
           should render("<r:children:each><r:title /> </r:children:each>").
           as("Pagina 1 ")
@@ -117,35 +117,38 @@ describe "Globalize 2 Tags" do
     end
     
     it "does not filter by locale if 'locale' attribute is set to false" do
-      switch_locale("ro") do
+      switch_locale(:ro) do
         @parent.
           should render("<r:children:each locale='false'><r:title /> </r:children:each>").
           matching(/Pagina 1 Child page \d*/)
       end
     end
   end
-  
-  describe "<r:paginate_with_globalize />" do
-    before(:each) do
-      @parent = Factory.create(:page)
-      child_one = Factory.create(:child_page, :parent => @parent)
-      Factory.create(:romanian_page_translation, :page => child_one, :title => "Pagina 1")
-      (1..4).map{ |i| Factory.create(:child_page, :parent => @parent) }
-    end
-    
-    it "filters the paginated children by locale if 'locale' tag attribute is not set to false" do
-      switch_locale("ro") do
-        @parent.
-          should render("<r:paginate per_page='2'><r:each><r:title /></r:each></r:paginate>").
-          as("Pagina 1")
+
+  if defined?(PaginateExtension)
+    describe "<r:paginate_with_globalize />" do
+      before(:each) do
+        @parent = Factory.create(:page)
+        child_one = Factory.create(:child_page, :parent => @parent)
+        Factory.create(:romanian_page_translation, :page => child_one, :title => "Pagina 1")
+        (1..4).map{ |i| Factory.create(:child_page, :parent => @parent) }
       end
-    end
     
-    it "does not filter paginated children by locale if 'locale' tag attribute is set to false" do
-      switch_locale("ro") do
-        @parent.
-          should render("<r:paginate per_page='2' locale='false'><r:each><r:title /> </r:each></r:paginate>").
-          matching(%r{Pagina 1 Child page \d*})
+      it "filters the paginated children by locale if 'locale' tag attribute is not set to false" do
+        @parent.save!
+        switch_locale(:ro) do
+          @parent.
+            should render("<r:paginate per_page='2'><r:each><r:title /></r:each></r:paginate>").
+            as("Pagina 1")
+        end
+      end
+    
+      it "does not filter paginated children by locale if 'locale' tag attribute is set to false" do
+        switch_locale(:ro) do
+          @parent.
+            should render("<r:paginate per_page='2' locale='false'><r:each><r:title /> </r:each></r:paginate>").
+            matching(%r{Pagina 1 Child page \d*})
+        end
       end
     end
   end

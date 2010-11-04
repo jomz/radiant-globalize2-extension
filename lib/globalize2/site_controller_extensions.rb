@@ -1,8 +1,18 @@
 module Globalize2
   module SiteControllerExtensions
     def self.included(base)
+      base.send(:include, InstanceMethods)
       base.class_eval do
         alias_method_chain :find_page, :globalize
+        before_filter :set_locale
+      end
+    end
+
+
+    module InstanceMethods
+      def set_locale
+        @locale = params[:locale] || Globalize2Extension.default_language
+        I18n.locale = @locale.to_sym
       end
     end
     

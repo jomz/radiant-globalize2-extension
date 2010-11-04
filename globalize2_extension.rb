@@ -5,14 +5,11 @@ class Globalize2Extension < Radiant::Extension
   version "0.1"
   description "Translate content in Radiant CMS using the Globalize2 Rails plugin."
   url "http://blog.aissac.ro/radiant/globalize2-extension/"
-  
-  define_routes do |map|
-    map.connect '/:locale/*url', :controller => 'site', :action => 'show_page',
-      :locale => Regexp.compile(locales.join("|"))
-  end
-  
+
   GLOBALIZABLE_CONTENT = {
-    Page     => [:title, :slug, :breadcrumb, :description, :keywords],
+
+    #Page     => [:title, :slug, :breadcrumb, :description, :keywords],
+    #ArchivePage => [:title, :slug, :breadcrumb, :description, :keywords],
     PagePart => [:content],
     Layout   => [:content],
     Snippet  => [:content]
@@ -31,6 +28,9 @@ class Globalize2Extension < Radiant::Extension
   end
   
   def activate
+    require 'i18n/backend/fallbacks'
+    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+
     admin.page.edit.add :form, 'admin/shared/change_locale', :before => 'edit_page_parts'
     admin.snippet.edit.add :form, 'admin/shared/change_locale', :before => 'edit_content'
     admin.layout.edit.add :form, 'admin/shared/change_locale', :before => 'edit_content'
@@ -48,19 +48,34 @@ class Globalize2Extension < Radiant::Extension
     Admin::ResourceController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::PagesController.send(:include, Globalize2::PagesControllerExtensions)
+    Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
+    Admin::LayoutsController.send(:include, Globalize2::ApplicationControllerExtensions )
+    Admin::SnippetsController.send(:include, Globalize2::ApplicationControllerExtensions)
+
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
     
     GLOBALIZABLE_CONTENT.each do |model, columns|
       model.send(:translates, *columns)
+      #p model.ancestors
     end
-    
+
     Page.send(:include, Globalize2::GlobalizeTags)
-    Page.send(:include, Globalize2::PageExtensions)
+
+    Page.class_eval {
+      
+      #extend Globalize2::PageExtensions::ClassMethods
+      include  Globalize2::PageExtensions::InstanceMethods
+    }
+
+    #Page.send(:include, Globalize2::PageExtensions)
     PagePart.send(:include, Globalize2::PagePartExtensions)
 
     #compatibility
     CopyMove::Model.send(:include, Globalize2::Compatibility::CopyMove::CopyMoveModelExtensions) if defined?(CopyMoveExtension)
     ArchivePage.send(:include, Globalize2::Compatibility::Archive::ArchivePageExtensions) if defined?(ArchiveExtension)
+    #ArchivePage.send(:include, Globalize2::GlobalizeTags) if defined?(ArchiveExtension)
+    Page.send(:include, Globalize2::Compatibility::Vhost::PageExtensions) if defined?(VhostExtension)
+
     if defined?(PaginateExtension)
       Page.send(:include, Globalize2::Compatibility::Paginate::GlobalizeTags)
       Page.send(:include, Globalize2::Compatibility::Paginate::PageExtensions)
