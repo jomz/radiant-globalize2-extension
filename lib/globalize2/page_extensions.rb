@@ -18,7 +18,7 @@ module Globalize2
         attr_accessor :reset_translations
         alias_method_chain 'tag:link', :globalize
         alias_method_chain 'tag:children:each', :globalize
-        alias_method_chain :url, :globalize
+        alias_method_chain :path, :globalize
         alias_method_chain :save_translations!, :reset
         
         def self.scope_locale(locale, &block)
@@ -68,11 +68,11 @@ module Globalize2
       end
     end
     
-    def url_with_globalize
+    def path_with_globalize
       unless parent
-        '/' + I18n.locale.to_s + url_without_globalize
+        '/' + I18n.locale.to_s + path_without_globalize
       else
-        url_without_globalize
+        path_without_globalize
       end
     end
     
