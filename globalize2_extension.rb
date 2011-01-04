@@ -8,8 +8,9 @@ class Globalize2Extension < Radiant::Extension
 
   GLOBALIZABLE_CONTENT = {
 
-    #Page     => [:title, :slug, :breadcrumb, :description, :keywords],
-    #ArchivePage => [:title, :slug, :breadcrumb, :description, :keywords],
+    Page     => [:title, :slug, :breadcrumb, :description, :keywords],
+    ArchivePage => [:title, :slug, :breadcrumb, :description, :keywords],
+    FileNotFoundPage => [:title, :slug, :breadcrumb, :description, :keywords],
     PagePart => [:content],
     Layout   => [:content],
     Snippet  => [:content]
