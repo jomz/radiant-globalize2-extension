@@ -9,20 +9,10 @@ class Globalize2Extension < Radiant::Extension
   GLOBALIZABLE_CONTENT = {
 
     Page     => [:title, :slug, :breadcrumb],
-    ArchivePage => [:title, :slug, :breadcrumb],
-    FileNotFoundPage => [:title, :slug, :breadcrumb],
     PagePart => [:content],
     Layout   => [:content],
     Snippet  => [:content]
-  }
-
-  GLOBALIZABLE_ARCHIVE_CONTENT = {
-    ArchivePage           => [:title, :slug, :breadcrumb],
-    ArchiveDayIndexPage   => [:title, :slug, :breadcrumb],
-    ArchiveMonthIndexPage => [:title, :slug, :breadcrumb],
-    ArchiveYearIndexPage  => [:title, :slug, :breadcrumb]
-  }
-    
+  } 
   
   def self.default_language
     @@default_language ||= Radiant::Config['globalize.default_language'].blank? ? "en" : Radiant::Config['globalize.default_language']
@@ -63,7 +53,7 @@ class Globalize2Extension < Radiant::Extension
 
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
 
-    GLOBALIZABLE_CONTENT.merge(GLOBALIZABLE_ARCHIVE_CONTENT).each do |model, columns|
+    GLOBALIZABLE_CONTENT.each do |model, columns|
       model.send(:translates, *columns)
       #p model.ancestors
     end
