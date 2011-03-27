@@ -8,12 +8,11 @@ class Globalize2Extension < Radiant::Extension
 
   GLOBALIZABLE_CONTENT = {
 
-    #Page     => [:title, :slug, :breadcrumb, :description, :keywords],
-    #ArchivePage => [:title, :slug, :breadcrumb, :description, :keywords],
+    Page     => [:title, :slug, :breadcrumb],
     PagePart => [:content],
     Layout   => [:content],
     Snippet  => [:content]
-  }
+  } 
   
   def self.default_language
     @@default_language ||= Radiant::Config['globalize.default_language'].blank? ? "en" : Radiant::Config['globalize.default_language']
@@ -53,7 +52,7 @@ class Globalize2Extension < Radiant::Extension
     Admin::SnippetsController.send(:include, Globalize2::ApplicationControllerExtensions)
 
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
-    
+
     GLOBALIZABLE_CONTENT.each do |model, columns|
       model.send(:translates, *columns)
       #p model.ancestors
