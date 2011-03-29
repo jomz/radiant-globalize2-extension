@@ -69,7 +69,7 @@ module Globalize2
     end
     
     def path_with_globalize
-      unless parent
+      unless parent || Globalize2Extension.locales.size <= 1
         '/' + I18n.locale.to_s + path_without_globalize
       else
         path_without_globalize

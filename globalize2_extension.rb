@@ -1,5 +1,6 @@
 # Uncomment this if you reference any of your controllers in activate
 # require_dependency 'application'
+require 'globalize2/form_builder_extensions'
 
 class Globalize2Extension < Radiant::Extension
   version "0.1"
@@ -26,6 +27,14 @@ class Globalize2Extension < Radiant::Extension
     @@locales ||= [default_language, *languages].map(&:to_s)
   end
   
+  def self.content_locale
+    Thread.current[:content_locale] || default_language
+  end
+  
+  def self.content_locale= locale
+    Thread.current[:content_locale] = locale
+  end
+  
   def activate
     require 'i18n/backend/fallbacks'
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
@@ -43,13 +52,10 @@ class Globalize2Extension < Radiant::Extension
     
     I18n.default_locale = Globalize2Extension.default_language
     
-    ApplicationController.send(:include, Globalize2::ApplicationControllerExtensions)
-    Admin::ResourceController.send(:include, Globalize2::ApplicationControllerExtensions)
-    Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::PagesController.send(:include, Globalize2::PagesControllerExtensions)
-    Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
-    Admin::LayoutsController.send(:include, Globalize2::ApplicationControllerExtensions )
-    Admin::SnippetsController.send(:include, Globalize2::ApplicationControllerExtensions)
+    Admin::PagesController.send(:include, Globalize2::GlobalizedFieldsControllerExtension)
+    Admin::LayoutsController.send(:include, Globalize2::GlobalizedFieldsControllerExtension )
+    Admin::SnippetsController.send(:include, Globalize2::GlobalizedFieldsControllerExtension)
 
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
 

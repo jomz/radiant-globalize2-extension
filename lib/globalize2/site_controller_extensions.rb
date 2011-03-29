@@ -12,13 +12,13 @@ module Globalize2
     module InstanceMethods
       def set_locale
         @locale = params[:locale] || Globalize2Extension.default_language
-        I18n.locale = @locale.to_sym
+        Globalize2Extension.content_locale = I18n.locale = @locale.to_sym
       end
     end
     
     def find_page_with_globalize(url)
-      globalized_url = '/' + I18n.locale.to_s + '/' + url
-      find_page_without_globalize(globalized_url)
+      url = '/' + I18n.locale.to_s + '/' + url if Globalize2Extension.locales.size > 1
+      find_page_without_globalize(url)
     end
   end
 end
