@@ -7,8 +7,7 @@ module Globalize2
     end
     
     def reset_locale
-      @locale = Globalize2Extension.default_language
-      Globalize2Extension.content_locale = I18n.locale = @locale.to_sym
+      Globalize2Extension.content_locale = session[:content_locale] = Globalize2Extension.default_language unless params[:content_locale]
     end
   end
 end

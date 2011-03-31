@@ -1,7 +1,7 @@
 module Globalize2
   module GlobalizedFieldsControllerExtension
     def self.included base
-      base.before_filter :set_content_locale
+      base.prepend_before_filter :set_content_locale
     end
 
 
