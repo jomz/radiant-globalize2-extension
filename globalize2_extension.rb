@@ -3,7 +3,7 @@
 require 'globalize2/form_builder_extensions'
 
 class Globalize2Extension < Radiant::Extension
-  version "0.2.3"
+  version "0.2.4"
   description "Translate content in Radiant CMS using the Globalize2 Rails plugin."
   url "http://blog.aissac.ro/radiant/globalize2-extension/"
 

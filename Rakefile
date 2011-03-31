@@ -129,7 +129,7 @@ begin
     gem.homepage = "https://github.com/jomz/radiant-globalize2-extension"
     gem.authors = ["Cristi Duma", "Istvan Hoka", "Edmund Haselwanter", "Benny Degezelle", "Jerrod Blavos", "Simo Niemelä", "Jan De Poorter"]
     gem.add_dependency 'radiant', ">=0.9.1"
-    gem.add_dependency 'i18n', "= 0.4.1"
+    gem.add_dependency 'i18n', ">= 0.4.1"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
