@@ -8,13 +8,16 @@ module Globalize2
 
 
       base.class_eval do
-
+        extend Globalize2::LocalizedContent
+        
         def self.locale
           I18n.locale
         end
         #eigenclass = class << self; self; end
 
         translates :title, :slug, :breadcrumb, :description, :keywords
+        localized_content_for :title, :slug, :breadcrumb
+        
         attr_accessor :reset_translations
         alias_method_chain 'tag:link', :globalize
         alias_method_chain 'tag:children:each', :globalize
@@ -70,12 +73,12 @@ module Globalize2
     
     def path_with_globalize
       unless parent || Globalize2Extension.locales.size <= 1
-        '/' + I18n.locale.to_s + path_without_globalize
+        '/' + Globalize2Extension.content_locale + path_without_globalize
       else
         path_without_globalize
       end
     end
-    
+        
     def clone
       new_page = super
       translations.each do |t|
