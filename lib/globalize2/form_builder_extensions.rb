@@ -7,12 +7,12 @@ module Globalize2
     
     def text_field_with_globalize(method, options = {})
       Rails.logger.debug "FormBuilder: text_field_with_globalize"
-      options[:value] = options[:value] || I18n.with_locale(Globalize2Extension.content_locale) { object.send(method) }
+      options[:value] = options[:value] || I18n.with_locale(Globalize2Extension.content_locale) { object && object.send(method) }
       text_field_without_globalize(method, options)
     end
     
     def text_area_with_globalize(method, options = {})
-      options[:value] = options[:value] || I18n.with_locale(Globalize2Extension.content_locale) { object.send(method) }
+      options[:value] = options[:value] || I18n.with_locale(Globalize2Extension.content_locale) { object && object.send(method) }
       text_area_without_globalize(method, options)
     end
   end
