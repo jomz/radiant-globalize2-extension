@@ -16,15 +16,15 @@ class Globalize2Extension < Radiant::Extension
   } 
   
   def self.default_language
-    @@default_language ||= Radiant::Config['globalize.default_language'].blank? ? "en" : Radiant::Config['globalize.default_language']
+    @@default_language ||= Radiant::Config['globalize.default_language']
   end
   
   def self.languages
-    @@languages ||= Radiant::Config['globalize.languages'].blank? ? [] : Radiant::Config['globalize.languages'].split(",").map(&:to_s)
+    @@languages ||= Radiant::Config['globalize.languages'].split(",")
   end
   
   def self.locales
-    @@locales ||= [default_language, *languages].map(&:to_s)
+    @@locales ||= ([default_language] | languages)
   end
   
   def self.content_locale
@@ -36,6 +36,9 @@ class Globalize2Extension < Radiant::Extension
   end
   
   def activate
+    Radiant::Config['globalize.default_language'] ||= 'en'
+    Radiant::Config['globalize.languages']        ||= 'en' # Hack: Config won't write empty settings to database.
+    
     require 'i18n/backend/fallbacks'
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 
