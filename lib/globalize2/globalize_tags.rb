@@ -64,8 +64,11 @@ module Globalize2
       raise TagError.new("'codes' attribute must be set") if tag.attr['codes'].blank?
       
       result = []
-      codes = tag.attr["codes"].split("|").each do |code|
+      codes = tag.attr["codes"].split("|")
+      codes.each do |code|
         hash[:code] = code
+        tag.locals.first = code == codes.first
+        tag.locals.last = code == codes.last
         if I18n.locale.to_s == code
           result << (hash[:active] || hash[:normal]).call
         else
@@ -83,6 +86,13 @@ module Globalize2
         hash = tag.locals.locale
         hash[symbol] = tag.block
       end
+    end
+
+    tag "locales:if_first" do |tag|
+      tag.expand if tag.locals.first
+    end
+    tag "locales:if_last" do |tag|
+      tag.expand if tag.locals.last
     end
   
     tag 'locales:code' do |tag|
