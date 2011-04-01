@@ -36,7 +36,7 @@ module Globalize2
       <pre><code><r:locale /></code></pre>
     }
     tag 'locale' do |tag|
-      I18n.locale.to_s
+      Globalize2Extension.content_locale
     end
     
     desc %{
@@ -193,10 +193,10 @@ module Globalize2
       # Allows you to switch the current locale while within the block.
       # The previously current locale is reset after the block is finished.
       def switch_locale(locale)
-        current_locale = I18n.locale
-        I18n.locale = locale.to_sym
+        current_locale = Globalize2Extension.content_locale
+        Globalize2Extension.content_locale = locale
         result = yield
-        I18n.locale = current_locale
+        Globalize2Extension.content_locale = current_locale
         result
       end
   end
