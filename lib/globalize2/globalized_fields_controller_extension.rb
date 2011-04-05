@@ -12,6 +12,14 @@ module Globalize2
       
       response_for :update
     end
+    
+    def create
+      I18n.with_locale(Globalize2Extension.content_locale) do
+        model.update_attributes!(params[model_symbol])
+      end
+      
+      response_for :create
+    end
 
     private
     def set_content_locale
