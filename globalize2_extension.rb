@@ -12,7 +12,8 @@ class Globalize2Extension < Radiant::Extension
     Page     => [:title, :slug, :breadcrumb],
     PagePart => [:content],
     Layout   => [:content],
-    Snippet  => [:content]
+    Snippet  => [:content],
+    PageField => [:content]
   } 
   
   def self.default_language
