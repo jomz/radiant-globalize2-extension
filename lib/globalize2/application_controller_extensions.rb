@@ -10,9 +10,12 @@ module Globalize2
     module InstanceMethods
       def set_locale
         @locale = params[:locale] || session[:locale] || Globalize2Extension.default_language
+        @lang = params[:lang] || session[:lang] || Globalize2Extension.default_language
 
         session[:locale] = @locale
         I18n.locale = @locale.to_sym
+        session[:lang] = @lang
+        I18n.lang = @lang.to_sym
       end
       
       def reset_locale

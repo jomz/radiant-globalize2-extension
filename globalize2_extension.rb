@@ -1,6 +1,31 @@
 # Uncomment this if you reference any of your controllers in activate
 # require_dependency 'application'
 
+module I18n
+
+  def self.lang
+    config.lang
+  end
+
+  def self.lang=(value)
+    config.lang = (value)
+  end
+
+  class Config
+    # The only configuration value that is not global and scoped to thread is :locale.
+    # It defaults to the default_locale.
+    def lang
+      @lang ||= default_locale
+    end
+
+    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
+    def lang=(lang)
+      @lang = lang.to_sym rescue nil
+
+    end
+  end
+end
+
 class Globalize2Extension < Radiant::Extension
   version "0.1"
   description "Translate content in Radiant CMS using the Globalize2 Rails plugin."
