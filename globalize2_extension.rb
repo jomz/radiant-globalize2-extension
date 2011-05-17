@@ -1,33 +1,9 @@
 # Uncomment this if you reference any of your controllers in activate
 # require_dependency 'application'
-
-module I18n
-
-  def self.lang
-    config.lang
-  end
-
-  def self.lang=(value)
-    config.lang = (value)
-  end
-
-  class Config
-    # The only configuration value that is not global and scoped to thread is :locale.
-    # It defaults to the default_locale.
-    def lang
-      @lang ||= default_locale
-    end
-
-    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
-    def lang=(lang)
-      @lang = lang.to_sym rescue nil
-
-    end
-  end
-end
+require 'globalize2/form_builder_extensions'
 
 class Globalize2Extension < Radiant::Extension
-  version "0.1"
+  version "0.2.8"
   description "Translate content in Radiant CMS using the Globalize2 Rails plugin."
   url "http://blog.aissac.ro/radiant/globalize2-extension/"
 
@@ -39,20 +15,31 @@ class Globalize2Extension < Radiant::Extension
     Snippet  => [:content],
     PageField  => [:content]
   }
-  
+
   def self.default_language
-    @@default_language ||= Radiant::Config['globalize.default_language'].blank? ? "en" : Radiant::Config['globalize.default_language']
+    @@default_language ||= Radiant::Config['globalize.default_language']
   end
   
   def self.languages
-    @@languages ||= Radiant::Config['globalize.languages'].blank? ? [] : Radiant::Config['globalize.languages'].split(",").map(&:to_s)
+    @@languages ||= Radiant::Config['globalize.languages'].split(",")
   end
   
   def self.locales
-    @@locales ||= [default_language, *languages].map(&:to_s)
+    @@locales ||= ([default_language] | languages)
+  end
+  
+  def self.content_locale
+    Thread.current[:content_locale] || default_language
+  end
+  
+  def self.content_locale= locale
+    Thread.current[:content_locale] = locale
   end
   
   def activate
+    Radiant::Config['globalize.default_language'] ||= 'en'
+    Radiant::Config['globalize.languages']        ||= 'en' # Hack: Config won't write empty settings to database.
+    
     require 'i18n/backend/fallbacks'
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 
@@ -69,13 +56,10 @@ class Globalize2Extension < Radiant::Extension
     
     I18n.default_locale = Globalize2Extension.default_language
     
-    ApplicationController.send(:include, Globalize2::ApplicationControllerExtensions)
-    Admin::ResourceController.send(:include, Globalize2::ApplicationControllerExtensions)
-    Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
     Admin::PagesController.send(:include, Globalize2::PagesControllerExtensions)
-    Admin::PagesController.send(:include, Globalize2::ApplicationControllerExtensions)
-    Admin::LayoutsController.send(:include, Globalize2::ApplicationControllerExtensions )
-    Admin::SnippetsController.send(:include, Globalize2::ApplicationControllerExtensions)
+    Admin::PagesController.send(:include, Globalize2::GlobalizedFieldsControllerExtension)
+    Admin::LayoutsController.send(:include, Globalize2::GlobalizedFieldsControllerExtension )
+    Admin::SnippetsController.send(:include, Globalize2::GlobalizedFieldsControllerExtension)
 
     SiteController.send(:include, Globalize2::SiteControllerExtensions)
 

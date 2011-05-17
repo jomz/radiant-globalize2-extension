@@ -36,7 +36,7 @@ module Globalize2
       <pre><code><r:locale /></code></pre>
     }
     tag 'locale' do |tag|
-      I18n.locale.to_s
+      Globalize2Extension.content_locale
     end
     
     desc %{
@@ -64,8 +64,11 @@ module Globalize2
       raise TagError.new("'codes' attribute must be set") if tag.attr['codes'].blank?
       
       result = []
-      codes = tag.attr["codes"].split("|").each do |code|
+      codes = tag.attr["codes"].split("|")
+      codes.each do |code|
         hash[:code] = code
+        tag.locals.first = code == codes.first
+        tag.locals.last = code == codes.last
         if I18n.locale.to_s == code
           result << (hash[:active] || hash[:normal]).call
         else
@@ -83,6 +86,13 @@ module Globalize2
         hash = tag.locals.locale
         hash[symbol] = tag.block
       end
+    end
+
+    tag "locales:if_first" do |tag|
+      tag.expand if tag.locals.first
+    end
+    tag "locales:if_last" do |tag|
+      tag.expand if tag.locals.last
     end
   
     tag 'locales:code' do |tag|
@@ -193,10 +203,10 @@ module Globalize2
       # Allows you to switch the current locale while within the block.
       # The previously current locale is reset after the block is finished.
       def switch_locale(locale)
-        current_locale = I18n.locale
-        I18n.locale = locale.to_sym
+        current_locale = Globalize2Extension.content_locale
+        Globalize2Extension.content_locale = locale
         result = yield
-        I18n.locale = current_locale
+        Globalize2Extension.content_locale = current_locale
         result
       end
   end

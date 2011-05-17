@@ -118,3 +118,21 @@ end
 
 # Load any custom rakefiles for extension
 Dir[File.dirname(__FILE__) + '/tasks/*.rake'].sort.each { |f| require f }
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "radiant-globalize2-extension"
+    gem.summary = %Q{Globalize2 extension for Radiant CMS}
+    gem.description = %Q{This extension allows you to translate your Radiant content}
+    gem.email = "benny@gorilla-webdesign.be"
+    gem.homepage = "https://github.com/jomz/radiant-globalize2-extension"
+    gem.authors = ["Cristi Duma", "Istvan Hoka", "Edmund Haselwanter", "Benny Degezelle", "Jerrod Blavos", "Simo Niemelä", "Jan De Poorter"]
+    gem.add_dependency 'radiant', ">=0.9.1"
+    gem.add_dependency 'i18n', ">= 0.4.1"
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. This is only required if you plan to package copy_move as a gem."
+end
+
