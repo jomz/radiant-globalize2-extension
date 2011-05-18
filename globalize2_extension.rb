@@ -2,6 +2,8 @@
 # require_dependency 'application'
 require 'globalize2/form_builder_extensions'
 
+ActiveRecord::Base.send(:include, ActiveRecord::GlobalizeAccessors)
+
 class Globalize2Extension < Radiant::Extension
   version "0.2.8"
   description "Translate content in Radiant CMS using the Globalize2 Rails plugin."
