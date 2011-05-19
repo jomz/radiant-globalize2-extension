@@ -6,14 +6,19 @@ module Globalize2
     end
     
     def text_field_with_globalize(method, options = {})
-      Rails.logger.debug "FormBuilder: text_field_with_globalize"
-      options[:value] = options[:value] || I18n.with_locale(Globalize2Extension.content_locale) { object && object.send(method) }
-      text_field_without_globalize(method, options)
+      text_field_without_globalize(globalized_method_name(object_name,method), options)
     end
     
     def text_area_with_globalize(method, options = {})
-      options[:value] = options[:value] || I18n.with_locale(Globalize2Extension.content_locale) { object && object.send(method) }
-      text_area_without_globalize(method, options)
+      text_area_without_globalize(globalized_method_name(object_name,method), options)
+    end
+
+    def globalized_method_name(object_name,method)
+      object_class = object_name.to_s.capitalize.constantize rescue nil
+      if (object_class.respond_to? :translated_attribute_names) && (object_class.translated_attribute_names.include? method)
+        method = "#{method}_#{Globalize2Extension.content_locale}".to_sym
+      end
+      method
     end
   end
 end
