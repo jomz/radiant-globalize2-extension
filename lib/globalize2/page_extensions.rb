@@ -14,7 +14,18 @@ module Globalize2
           I18n.locale
         end
         #eigenclass = class << self; self; end
-
+        
+        def self.find_by_path_with_globalize(path, live = true)
+          raise MissingRootPageError unless root
+          if path[/^(js|css)/]
+            case $1
+            when "js" then JavascriptPage.root.find_by_path(path, live)
+            when "css" then StylesheetPage.root.find_by_path(path, live)
+            end
+          else
+            root.find_by_path(path, live)
+          end
+        end
         translates :title, :slug, :breadcrumb, :description, :keywords
         localized_content_for :title, :slug, :breadcrumb
         
@@ -23,6 +34,11 @@ module Globalize2
         alias_method_chain 'tag:children:each', :globalize
         alias_method_chain :path, :globalize
         alias_method_chain :save_translations!, :reset
+        alias_method_chain :find_by_path, :globalize
+        class << self
+          alias_method_chain :find_by_path, :globalize
+        end
+        
         
         def self.scope_locale(locale, &block)
           with_scope(:find => { :joins => "INNER JOIN page_translations ptrls ON ptrls.page_id = pages.id", :conditions => ['ptrls.locale = ?', locale] }) do
@@ -72,10 +88,25 @@ module Globalize2
     end
     
     def path_with_globalize
-      unless parent || Globalize2Extension.locales.size <= 1
+      unless parent || Globalize2Extension.locales.size <= 1 
         '/' + Globalize2Extension.content_locale.to_s + path_without_globalize
       else
-        path_without_globalize
+        if ["text/css", "text/javascript"].include?(headers['Content-Type']) && parent? && parent == Page.root
+          clean_path(slug)
+        else
+          path_without_globalize
+        end
+      end
+    end
+    
+    def find_by_path_with_globalize(path, live = true, clean = true)
+      if clean_path(path)[/^(js|css)/]
+        case $1
+        when "js" then JavascriptPage.root.find_by_path(path, live)
+        when "css" then StylesheetPage.root.find_by_path(path, live)
+        end
+      else
+        find_by_path_without_globalize(path, live, clean)
       end
     end
         

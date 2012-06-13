@@ -17,7 +17,9 @@ module Globalize2
     end
     
     def find_page_with_globalize(url)
-      url = '/' + I18n.locale.to_s + '/' + url if Globalize2Extension.locales.size > 1
+      if Globalize2Extension.locales.size > 1 && url[/css|js/].nil?
+        url = '/' + I18n.locale.to_s + '/' + url
+      end
       find_page_without_globalize(url)
     end
   end
