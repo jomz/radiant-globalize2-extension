@@ -92,7 +92,7 @@ module Globalize2
         '/' + Globalize2Extension.content_locale.to_s + path_without_globalize
       else
         if ["text/css", "text/javascript"].include?(headers['Content-Type']) && parent? && parent == Page.root
-          clean_path(slug)
+          clean_path(slug) + '/'
         else
           path_without_globalize
         end
